@@ -9,13 +9,14 @@ FROM resin/rpi-raspbian:wheezy
 
 # Install MariaDB.
 RUN \
-  deb http://repository.pi3g.com/debian/ wheezy main && \
+  sudo apt-get update && \
+  sudo apt-get -y install wget && \
   sudo wget -O /etc/apt/sources.list.d/repository.pi3g.com.list http://repository.pi3g.com/sources.list && \
   wget -O - http://repository.pi3g.com/pubkey | sudo apt-key add - && \
   sudo apt-get update && \                                                         
   sudo apt-get upgrade  && \
-  apt-get install mariadb-server && \
-  rm -rf /var/lib/apt/lists/* && \
+  apt-get -y install mariadb-server
+RUN \
   sed -i 's/^\(bind-address\s.*\)/# \1/' /etc/mysql/my.cnf && \
   echo "mysqld_safe &" > /tmp/config && \
   echo "mysqladmin --silent --wait=30 ping || exit 1" >> /tmp/config && \
